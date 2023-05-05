@@ -23,3 +23,26 @@ function createMarkup(items) {
     })
     .join("");
 }
+
+galleryListEl.addEventListener("click", onGalleryClick);
+
+function onGalleryClick() {
+  event.preventDefault();
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+
+  const fullSizedPicture = event.target.dataset.source;
+
+  const instance = basicLightbox.create(`
+    <img src="${fullSizedPicture}" width="800" height="600">
+`);
+  instance.show();
+
+  document.addEventListener("keydown", (event) => {
+    console.log(event.code);
+    if (event.code === "Escape") {
+      instance.close(instance);
+    }
+  });
+}
