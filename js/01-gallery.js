@@ -26,7 +26,7 @@ function createMarkup(items) {
 
 galleryListEl.addEventListener("click", onGalleryClick);
 
-function onGalleryClick() {
+function onGalleryClick(event) {
   event.preventDefault();
   if (event.target.nodeName !== "IMG") {
     return;
@@ -34,15 +34,24 @@ function onGalleryClick() {
 
   const fullSizedPicture = event.target.dataset.source;
 
-  const instance = basicLightbox.create(`
+  const instance = basicLightbox.create(
+    `
     <img src="${fullSizedPicture}" width="800" height="600">
-`);
+`,
+    {
+      onShow: (instance) => {
+        document.addEventListener("keydown", onEscape);
+      },
+      onClose: (instance) => {
+        document.removeEventListener("keydown", onEscape);
+      },
+    }
+  );
   instance.show();
 
-  document.addEventListener("keydown", (event) => {
-    console.log(event.code);
+  function onEscape(event) {
     if (event.code === "Escape") {
-      instance.close(instance);
+      instance.close();
     }
-  });
+  }
 }
